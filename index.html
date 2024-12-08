@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gra z Kodem</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(to bottom, #ffe4e1, #f0f8ff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            border: 5px solid #ffb6c1;
+            position: relative;
+        }
+
+        .codeDisplay {
+            font-size: 24px;
+            letter-spacing: 5px;
+            font-weight: bold;
+            color: #555;
+            background: #ffcccb;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #87cefa;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #4682b4;
+            transform: scale(1.1);
+        }
+
+        .resetButton {
+            background-color: #ff6f61;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        .resetButton:hover {
+            background-color: #e63946;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #ffcccb, #f0f8ff);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .celebration.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .celebration h1 {
+            font-size: 36px;
+            color: #ff69b4;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px #fff;
+            z-index: 10;
+        }
+
+        /* Petardy */
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle, #ff4500, #ff8c00);
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(5) translateY(-200px);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(0.1) translateY(-400px);
+                opacity: 0;
+            }
+        }
+
+        /* Konfetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: #ff69b4;
+            animation: fall 3s linear infinite;
+            opacity: 0.7;
+        }
+
+        .confetti:nth-child(odd) {
+            background: #ffb6c1;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-200px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(800px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+    <script>
+        let enteredCode = ""; 
+        const correctCode = "9263";
+
+        function addDigit(digit) {
+            enteredCode += digit;
+            document.getElementById("enteredCode").innerText = enteredCode;
+
+            if (enteredCode.length === 4) {
+                checkCode();
+            }
+        }
+
+        function resetCode() {
+            enteredCode = "";
+            document.getElementById("enteredCode").innerText = "";
+            document.getElementById("message").innerText = "";
+        }
+
+        function checkCode() {
+            if (enteredCode === correctCode) {
+                showCelebration();
+            } else {
+                document.getElementById("message").innerText = "Błędny kod. Spróbuj ponownie!";
+                document.getElementById("message").style.color = "red";
+                setTimeout(resetCode, 2000);
+            }
+        }
+
+        function showCelebration() {
+            const celebration = document.getElementById("celebration");
+            celebration.classList.add("visible");
+            generateFireworks();
+            generateConfetti();
+        }
+
+        function resetGame() {
+            const celebration = document.getElementById("celebration");
+            celebration.classList.remove("visible");
+            resetCode();
+        }
+
+        function generateFireworks() {
+            const container = document.querySelector('.celebration');
+            for (let i = 0; i < 10; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.left = Math.random() * 100 + '%';
+                firework.style.bottom = Math.random() * 50 + '%';
+                container.appendChild(firework);
+                setTimeout(() => container.removeChild(firework), 1000);
+            }
+        }
+
+        function generateConfetti() {
+            const container = document.querySelector('.celebration');
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(confetti);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Gra z Kodem</h1>
+        <p>Wprowadź cyfry w odpowiedniej kolejności, aby odgadnąć czterocyfrowy kod!</p>
+        <div id="enteredCode" class="codeDisplay"></div>
+        <div class="keypad">
+            <button onclick="addDigit('1')">1</button>
+            <button onclick="addDigit('2')">2</button>
+            <button onclick="addDigit('3')">3</button>
+            <button onclick="addDigit('4')">4</button>
+            <button onclick="addDigit('5')">5</button>
+            <button onclick="addDigit('6')">6</button>
+            <button onclick="addDigit('7')">7</button>
+            <button onclick="addDigit('8')">8</button>
+            <button onclick="addDigit('9')">9</button>
+            <button onclick="addDigit('0')">0</button>
+        </div>
+        <button class="resetButton" onclick="resetCode()">Reset</button>
+        <p id="message"></p>
+    </div>
+
+    <div id="celebration" class="celebration">
+        <h1>GRATULACJE! UDAŁO CI SIĘ UKOŃCZYĆ GRĘ!</h1>
+	<p>OTWÓRZ SKRZYNKĘ! </p>
+        <button onclick="resetGame()">Zagraj ponownie</button>
+    </div>
+</body>
+</html>
